@@ -18,7 +18,7 @@ To run application, clone `master` branch locally, execute following commands an
 ```
 npm install -g @angular/cli
 npm install
-npm ng serve
+ng serve
 ```
 
 ## Building
