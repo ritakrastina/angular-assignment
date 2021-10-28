@@ -11,7 +11,8 @@ import { MessagesService } from './messages.service';
   providedIn: 'root'
 })
 export class ExchangeRatesService {
-  private exchangeRatesApiUrl = 'https://api.exchangeratesapi.io'
+  private exchangeRatesApiUrl = 'https://api.exchangeratesapi.io/v1';
+  private exchangeRatesApiKey = 'YOUR_API_KEY';
 
   constructor(
     private http: HttpClient,
@@ -28,9 +29,10 @@ export class ExchangeRatesService {
   getAllExchangeRates(filter: AllRatesFilter): Observable<any> {
     this.messagesService.clearErrors();
 
+    var accessKey = `?access_key=${this.exchangeRatesApiKey}`;
     var dateFilter = formatDate(filter.date, 'yyyy-MM-dd', 'en-US');
-    var currencyFilter = `?base=${filter.baseCurrency}`;
-    var requestUrl = `${this.exchangeRatesApiUrl}/${dateFilter}${currencyFilter}`;
+    var currencyFilter = `&base=${filter.baseCurrency}`;
+    var requestUrl = `${this.exchangeRatesApiUrl}/${dateFilter}${accessKey}${currencyFilter}`;
 
     return this.http.get<any>(requestUrl)
       .pipe(
@@ -41,11 +43,12 @@ export class ExchangeRatesService {
   getSingleExchangeRates(filter: SingleRateFilter): Observable<any> {
     this.messagesService.clearErrors();
 
-    var dateFromFilter = `?start_at=${formatDate(filter.dateFrom, 'yyyy-MM-dd', 'en-US')}`;
+    var accessKey = `?access_key=${this.exchangeRatesApiKey}`;
+    var dateFromFilter = `&start_at=${formatDate(filter.dateFrom, 'yyyy-MM-dd', 'en-US')}`;
     var dateTillFilter = `&end_at=${formatDate(filter.dateTill, 'yyyy-MM-dd', 'en-US')}`;
     var baseCurrencyFilter = `&base=${filter.baseCurrency}`;
     var selectedCurrencyFilter = `&symbols=${filter.selectedCurrency}`;
-    var requestUrl = `${this.exchangeRatesApiUrl}/history${dateFromFilter}${dateTillFilter}${baseCurrencyFilter}${selectedCurrencyFilter}`;
+    var requestUrl = `${this.exchangeRatesApiUrl}/history${accessKey}${dateFromFilter}${dateTillFilter}${baseCurrencyFilter}${selectedCurrencyFilter}`;
     
     return this.http.get<any>(requestUrl)
       .pipe(
